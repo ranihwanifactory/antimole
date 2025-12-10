@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  /* Kid-Friendly Palette */
+  --color-sky-blue: #87CEEB;
+  --color-grass-green: #90EE90;
+  --color-sun-yellow: #FFD700;
+  --color-cute-pink: #FFB6C1;
+  --color-soft-white: #F0F8FF;
+  --color-chocolate: #D2691E;
+
+  --font-display: "Fredoka", sans-serif;
+
+  --animate-pop-up: pop-up 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  --animate-hit: hit 0.2s ease-in forwards;
+  --animate-bounce-slow: bounce-slow 2s infinite;
+
+  @keyframes pop-up {
+    0% {
+      transform: translateY(100%) scale(0.5);
+    }
+
+    80% {
+      transform: translateY(-10%) scale(1.1);
+    }
+
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes hit {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+      transform: scale(0.9) rotate(-10deg);
+    }
+
+    100% {
+      transform: scale(0) rotate(10deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes bounce-slow {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .text-outline {
+    text-shadow: 2px 2px 0px #00000033;
+  }
+
+  .box-cartoon {
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+    border: 3px solid white;
+  }
+}
+
+body {
+  @apply bg-sky-blue text-gray-800 overflow-hidden;
+  font-family: 'Fredoka', sans-serif;
+}
