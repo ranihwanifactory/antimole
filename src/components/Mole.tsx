@@ -1,12 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { CharacterAvatar } from './CharacterAvatar';
+import type { CharacterConfig } from './CharacterAvatar';
 
 interface MoleProps {
     isVisible: boolean;
     isHit: boolean;
     onHit: () => void;
+    characterConfig: CharacterConfig;
 }
 
-export const Mole = ({ isVisible, isHit, onHit }: MoleProps) => {
+export const Mole = ({ isVisible, isHit, onHit, characterConfig }: MoleProps) => {
     return (
         <div className="relative w-full aspect-square flex items-end justify-center overflow-hidden rounded-full bg-[#5D4037] border-4 border-[#3E2723] shadow-inner">
             {/* Hole Background */}
@@ -24,28 +27,7 @@ export const Mole = ({ isVisible, isHit, onHit }: MoleProps) => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        {/* Cute Mole Body */}
-                        <div className="w-full h-full bg-chocolate rounded-t-[40%] relative shadow-lg">
-                            {/* Eyes */}
-                            <div className="absolute top-1/3 left-1/4 w-3 h-4 bg-black rounded-full">
-                                <div className="absolute top-1 left-1 w-1 h-1 bg-white rounded-full" />
-                            </div>
-                            <div className="absolute top-1/3 right-1/4 w-3 h-4 bg-black rounded-full">
-                                <div className="absolute top-1 left-1 w-1 h-1 bg-white rounded-full" />
-                            </div>
-
-                            {/* Pink Nose */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-6 h-4 bg-cute-pink rounded-full shadow-sm" />
-
-                            {/* Whiskers */}
-                            <div className="absolute top-1/2 left-2 w-4 h-0.5 bg-black/20 rotate-12" />
-                            <div className="absolute top-[55%] left-2 w-4 h-0.5 bg-black/20 -rotate-12" />
-                            <div className="absolute top-1/2 right-2 w-4 h-0.5 bg-black/20 -rotate-12" />
-                            <div className="absolute top-[55%] right-2 w-4 h-0.5 bg-black/20 rotate-12" />
-
-                            {/* Tummy */}
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-1/3 bg-[#DEB887] rounded-t-full opacity-80" />
-                        </div>
+                        <CharacterAvatar config={characterConfig} />
                     </motion.div>
                 )}
             </AnimatePresence>
