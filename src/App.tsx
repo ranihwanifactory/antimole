@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { Volume2, VolumeX } from 'lucide-react';
 import { Mole } from './components/Mole';
 import { ScoreBoard } from './components/ScoreBoard';
 import { GameControls } from './components/GameControls';
@@ -23,9 +24,35 @@ function App() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [moles, setMoles] = useState<boolean[]>(new Array(MOLE_COUNT).fill(false));
   const [hitMoles, setHitMoles] = useState<boolean[]>(new Array(MOLE_COUNT).fill(false));
+  const [isMuted, setIsMuted] = useState(false);
 
   const timerRef = useRef<number | null>(null);
   const moleTimerRef = useRef<number | null>(null);
+  const bgmRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize BGM once
+  useEffect(() => {
+    bgmRef.current = new Audio('/bgm.mp3');
+    bgmRef.current.loop = true;
+    return () => {
+      if (bgmRef.current) {
+        bgmRef.current.pause();
+        bgmRef.current = null;
+      }
+    };
+  }, []);
+
+  // Handle BGM playback
+  useEffect(() => {
+    const bgm = bgmRef.current;
+    if (!bgm) return;
+
+    if (isPlaying && !isMuted) {
+      bgm.play().catch(e => console.log('BGM play failed:', e));
+    } else {
+      bgm.pause();
+    }
+  }, [isPlaying, isMuted]);
 
   const molesRef = useRef(moles);
   useEffect(() => { molesRef.current = moles; }, [moles]);
@@ -37,6 +64,7 @@ function App() {
     setIsGameOver(false);
     setMoles(new Array(MOLE_COUNT).fill(false));
     setHitMoles(new Array(MOLE_COUNT).fill(false));
+    if (bgmRef.current) bgmRef.current.currentTime = 0;
   };
 
   const endGame = useCallback(() => {
@@ -107,6 +135,11 @@ function App() {
 
     setScore(prev => prev + 10);
 
+    if (!isMuted) {
+      const audio = new Audio('/ef.mp3');
+      audio.play().catch(e => console.log('Audio play failed:', e));
+    }
+
     setTimeout(() => {
       setMoles(prev => {
         const newMoles = [...prev];
@@ -160,9 +193,21 @@ function App() {
       {/* Grass Bottom */}
       <div className="absolute bottom-0 w-full h-1/3 bg-grass-green" />
 
+      {/* Mute Button */}
+      <button
+        onClick={() => setIsMuted(!isMuted)}
+        className="absolute top-4 right-4 z-50 p-3 bg-white/80 backdrop-blur rounded-full shadow-lg hover:bg-white transition-colors"
+      >
+        {isMuted ? (
+          <VolumeX className="w-6 h-6 text-gray-600" />
+        ) : (
+          <Volume2 className="w-6 h-6 text-sky-blue" />
+        )}
+      </button>
+
       <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
         <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-8 text-outline drop-shadow-xl tracking-wider">
-          WHACK-A-MOLE
+          두더지잡기
         </h1>
 
         <ScoreBoard score={score} highScore={highScore} timeLeft={timeLeft} />
