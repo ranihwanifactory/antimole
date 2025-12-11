@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Play, Upload } from 'lucide-react';
 import { CharacterAvatar } from './CharacterAvatar';
 import type { CharacterConfig, CharacterType } from './CharacterAvatar';
@@ -15,14 +15,25 @@ export const MainMenu = ({ onStart }: MainMenuProps) => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setCustomImage(reader.result as string);
-                setSelectedType('custom');
-            };
-            reader.readAsDataURL(file);
+            // Clean up previous object URL if it exists
+            if (customImage && customImage.startsWith('blob:')) {
+                URL.revokeObjectURL(customImage);
+            }
+
+            const objectUrl = URL.createObjectURL(file);
+            setCustomImage(objectUrl);
+            setSelectedType('custom');
         }
     };
+
+    // Cleanup object URL on unmount or when image changes
+    useEffect(() => {
+        return () => {
+            if (customImage && customImage.startsWith('blob:')) {
+                URL.revokeObjectURL(customImage);
+            }
+        };
+    }, [customImage]);
 
     const handleStart = () => {
         onStart({
